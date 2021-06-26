@@ -14,4 +14,27 @@ ner:
   max_len: 204
 
 clinical_trials:
-  filename: 'clinical_trials_document_descriptions.json'
+  labeled:
+    ClinicalTrials.2021-04-27.pt1: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt1.labeled.json
+    ClinicalTrials.2021-04-27.pt2: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt2.labeled.json
+    ClinicalTrials.2021-04-27.pt3: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt3.labeled.json
+
+sentence_encoder:
+  model: sentence-transformers/LaBSE
+  tokenizer: sentence-transformers/LaBSE
+
+embeddings:
+  output_path: ../models/sentence_embeddings/sentence_transformer/
+  filename: clinical_documents_LaBSE.npz
+
+clustering: 
+  embedding_paths:
+    - ../models/sentence_embeddings/word2vec/ClinicalTrials.2021-04-27.pt1.w2v_200.npz
+    - ../models/sentence_embeddings/word2vec/ClinicalTrials.2021-04-27.pt2.w2v_200.npz
+  feature_type: word2vec
+  output_path: ../data/clusters
+  model_params:
+    n_clusters: 7
+    max_iter: 50
+    random_state: 42
+  filename: clinical_trials_w2v_100_clusters_k7.csv
