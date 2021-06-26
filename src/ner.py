@@ -5,7 +5,7 @@ Apply i2b2 2010 NER model to TREC 2021 documents
 import os
 import sys
 import argparse
-import yamlsss
+import yaml
 import json
 import torch
 from tensorflow.keras.preprocessing.sequence import pad_sequences
