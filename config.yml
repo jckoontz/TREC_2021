@@ -1,0 +1,17 @@
+ner:
+  tag2idx:
+    'B-problem': 1
+    'B-treatment': 2
+    'B-test': 8
+    'I-problem': 3
+    'I-treatment': 7
+    'I-test': 5
+    'X': 6
+    'O': 9
+    '[SEP]': 0
+    '[CLS]': 4
+
+  max_len: 204
+
+clinical_trials:
+  filename: 'clinical_trials_document_descriptions.json'
