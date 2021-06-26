@@ -33,8 +33,16 @@ clustering:
     - ../models/sentence_embeddings/word2vec/ClinicalTrials.2021-04-27.pt2.w2v_200.npz
   feature_type: word2vec
   output_path: ../data/clusters
-  model_params:
-    n_clusters: 7
-    max_iter: 50
-    random_state: 42
-  filename: clinical_trials_w2v_100_clusters_k7.csv
+  model_type: gmm
+  filename: clinical_trials_w2v_100_clusters_gmm_7comp.csv
+  kmeans:
+    model_params:
+      n_clusters: 7
+      max_iter: 50
+      random_state: 42
+  gmm:
+    model_params:
+      n_components: 7
+      max_iter: 10
+      random_state: 42
+      covariance_type: diag

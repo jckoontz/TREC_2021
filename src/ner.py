@@ -155,7 +155,6 @@ def detokenize(sent, lab):
   labels_map = dict()
   out_toks = []
   for index, _ in enumerate(sent):
-
       if (index+1 < len(sent)):
         if not sent[index].startswith('#') and not sent[index+1].startswith('#'):
           tok_map[index] = sent[index]
