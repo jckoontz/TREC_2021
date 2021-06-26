@@ -24,8 +24,7 @@ def main(args=None):
     embeddings, topic_ids = load_sentence_embeddings(config['clustering']['embedding_paths'])
 
     if config['clustering']['model_type'] == 'kmeans':
-
-        model = train_kmeans_model(config['clustering']['model_params'], embeddings)
+        model = train_kmeans_model(config['clustering']['kmeans']['model_params'], embeddings)
     else:
         model = train_gmm_model(config['clustering']['gmm']['model_params'], embeddings)
     
@@ -56,21 +55,21 @@ def load_sentence_embeddings(embedding_paths: list) -> np.ndarray:
     return np.array(embeddings), topic_ids
 
 
-def train_kmeans_model(model_params:dict, sentence_embeddings):
+def train_kmeans_model(model_params:dict, sentence_embeddings:np.ndarray):
     '''
     Fit kmeans model
     '''
     model = KMeans(**model_params, verbose=1).fit(sentence_embeddings)
     return model
 
-def train_gmm_model(model_params:dict, sentence_embeddings):
+def train_gmm_model(model_params:dict, sentence_embeddings:np.ndarray):
     '''
     Fit GMM 
     '''
     model = GaussianMixture(**model_params).fit(sentence_embeddings)
     return model
 
-def get_cluster_df(model: Any, topic_ids:list, model_type:str, sentence_embeddings):
+def get_cluster_df(model: Any, topic_ids:list, model_type:str, sentence_embeddings:np.ndarray):
     '''
     Create DataFrame of topic_ids and corresponding cluster labels
     '''
