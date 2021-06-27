@@ -14,23 +14,30 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 
-def main(args=None): 
+
+def main(args=None):
     if args is None:
         args = sys.argv[1:]
     args = parse_args(args)
 
     config = load_config(args.config_path)
 
-    embeddings, topic_ids = load_sentence_embeddings(config['clustering']['embedding_paths'])
+    embeddings, topic_ids = load_sentence_embeddings(
+        config['clustering']['embedding_paths'])
 
     if config['clustering']['model_type'] == 'kmeans':
-        model = train_kmeans_model(config['clustering']['kmeans']['model_params'], embeddings)
+        model = train_kmeans_model(
+            config['clustering']['kmeans']['model_params'], embeddings)
     else:
-        model = train_gmm_model(config['clustering']['gmm']['model_params'], embeddings)
-    
-    clusters_df = get_cluster_df(model, topic_ids, config['clustering']['model_type'], embeddings)
+        model = train_gmm_model(
+            config['clustering']['gmm']['model_params'], embeddings)
 
-    save_clusters_df(clusters_df, config['clustering']['output_path'], config['clustering']['filename'])
+    clusters_df = get_cluster_df(
+        model, topic_ids, config['clustering']['model_type'], embeddings)
+
+    save_clusters_df(clusters_df, config['clustering']
+                     ['output_path'], config['clustering']['filename'])
+
 
 def load_config(config_path: str) -> dict:
     '''
@@ -42,6 +49,7 @@ def load_config(config_path: str) -> dict:
         except:
             raise FileNotFoundError('Could not find configuration')
     return config
+
 
 def load_sentence_embeddings(embedding_paths: list) -> np.ndarray:
     '''
@@ -55,29 +63,34 @@ def load_sentence_embeddings(embedding_paths: list) -> np.ndarray:
     return np.array(embeddings), topic_ids
 
 
-def train_kmeans_model(model_params:dict, sentence_embeddings:np.ndarray):
+def train_kmeans_model(model_params: dict, sentence_embeddings: np.ndarray):
     '''
     Fit kmeans model
     '''
     model = KMeans(**model_params, verbose=1).fit(sentence_embeddings)
     return model
 
-def train_gmm_model(model_params:dict, sentence_embeddings:np.ndarray):
+
+def train_gmm_model(model_params: dict, sentence_embeddings: np.ndarray):
     '''
     Fit GMM 
     '''
     model = GaussianMixture(**model_params).fit(sentence_embeddings)
     return model
 
-def get_cluster_df(model: Any, topic_ids:list, model_type:str, sentence_embeddings:np.ndarray):
+
+def get_cluster_df(model: Any, topic_ids: list, model_type: str, sentence_embeddings: np.ndarray):
     '''
     Create DataFrame of topic_ids and corresponding cluster labels
     '''
     if model_type == 'kmeans':
-        df_clusters = pd.DataFrame({'topic_id': topic_ids, 'cluster': model.labels_})
+        df_clusters = pd.DataFrame(
+            {'topic_id': topic_ids, 'cluster': model.labels_})
     else:
-        df_clusters = pd.DataFrame({'topic_id': topic_ids, 'cluster': model.predict(sentence_embeddings)})
+        df_clusters = pd.DataFrame(
+            {'topic_id': topic_ids, 'cluster': model.predict(sentence_embeddings)})
     return df_clusters
+
 
 def save_clusters_df(df: pd.DataFrame, outpath: str, fname: str):
     '''
@@ -85,6 +98,7 @@ def save_clusters_df(df: pd.DataFrame, outpath: str, fname: str):
     '''
     df.to_csv(os.path.join(outpath, fname))
     print(f'DataFrame saved as {fname} to {outpath}')
+
 
 def parse_args(args):
     epilog = ''
@@ -95,6 +109,7 @@ def parse_args(args):
         epilog=epilog)
     parser.add_argument('--config_path', help='Path to the config', type=str)
     return parser.parse_args(args)
+
 
 if __name__ == '__main__':
     main()
