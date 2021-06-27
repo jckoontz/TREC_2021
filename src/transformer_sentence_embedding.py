@@ -27,8 +27,11 @@ def main(args=None):
 
     model, tokenizer = get_model_and_tokenizer(config['sentence_encoder'])
 
-    embeddings = get_embeddings(model, tokenizer, sentences)
-
+    if config['sentence_encoder']['type'] == 'specter':
+        embeddings = get_specter_embeddings(model, tokenizer, sentences)
+    else:
+        embeddings = get_embeddings(model, tokenizer, sentences)
+    
     save_embeddings(config['embeddings'],
                     embeddings, document_ids)
 
@@ -93,6 +96,23 @@ def get_embeddings(model: AutoModel, tokenizer: AutoTokenizer, sentences: list) 
             embeddings.append(embedding.detach().cpu().numpy()[0])
     return np.vstack([embeddings])
 
+def get_specter_embeddings(model: AutoModel, tokenizer: AutoTokenizer, sentences: list) -> np.ndarray:
+    '''
+    Get specker embeddings
+    https://arxiv.org/pdf/2004.07180.pdf
+    '''
+    embeddings = []
+    for sent in tqdm(sentences):
+        encoded_input = tokenizer(sent, padding=True, truncation=True, max_length=64, return_tensors='pt')
+        with torch.no_grad():
+            model_output = model(**encoded_input)
+            sentence_embedding = _cls_pooling(model_output).detach().cpu().numpy()[0]
+            embeddings.append(sentence_embedding)
+    return np.vstack([embeddings])
+
+
+def _cls_pooling(model_output):
+    return model_output[0][:,0]
 
 def save_embeddings(embeddings_config: dict, embeddings: np.ndarray, document_ids: list):
     '''
@@ -100,6 +120,7 @@ def save_embeddings(embeddings_config: dict, embeddings: np.ndarray, document_id
     '''
     np.savez_compressed(os.path.join(embeddings_config['output_path'], embeddings_config['filename']), embeddings=embeddings,
                                      document_ids=document_ids)
+    print(f'Embeddings saved!')
 
 
 def parse_args(args):

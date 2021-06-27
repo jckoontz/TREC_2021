@@ -15,17 +15,20 @@ ner:
 
 clinical_trials:
   labeled:
-    ClinicalTrials.2021-04-27.pt1: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt1.labeled.json
-    ClinicalTrials.2021-04-27.pt2: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt2.labeled.json
-    ClinicalTrials.2021-04-27.pt3: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt3.labeled.json
+    ClinicalTrials.2021-04-27.pt1: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt1.labeled.json
+    ClinicalTrials.2021-04-27.pt2: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt2.labeled.json
+    ClinicalTrials.2021-04-27.pt3: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt3.labeled.json
+    ClinicalTrials.2021-04-27.pt4: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt4.labeled.json
+    ClinicalTrials.2021-04-27.pt5: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt5.labeled.json
 
 sentence_encoder:
-  model: sentence-transformers/LaBSE
-  tokenizer: sentence-transformers/LaBSE
+  type: 'specter'
+  model: sentence-transformers/allenai-specter
+  tokenizer: sentence-transformers/allenai-specter
 
 embeddings:
   output_path: ../models/sentence_embeddings/sentence_transformer/
-  filename: clinical_documents_LaBSE.npz
+  filename: clinical_documents_specter_64.npz
 
 clustering: 
   embedding_paths:
@@ -33,8 +36,8 @@ clustering:
     - ../models/sentence_embeddings/word2vec/ClinicalTrials.2021-04-27.pt2.w2v_200.npz
   feature_type: word2vec
   output_path: ../data/clusters
-  model_type: gmm
-  filename: clinical_trials_w2v_100_clusters_gmm_7comp.csv
+  model_type: kmeans
+  filename: clinical_trials_w2v_100_clusters_kmeans_7comp.csv
   kmeans:
     model_params:
       n_clusters: 7
