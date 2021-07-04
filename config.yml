@@ -13,22 +13,26 @@ ner:
 
   max_len: 204
 
+topics:
+  labeled: topics2021_labeled.json
+
 clinical_trials:
   labeled:
-    ClinicalTrials.2021-04-27.pt1: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt1.labeled.json
-    ClinicalTrials.2021-04-27.pt2: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt2.labeled.json
-    ClinicalTrials.2021-04-27.pt3: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt3.labeled.json
-    ClinicalTrials.2021-04-27.pt4: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt4.labeled.json
-    ClinicalTrials.2021-04-27.pt5: ../clinical_trials/labeled/ClinicalTrials.2021-04-27.pt5.labeled.json
+    #topics: ../data/parsed_topics/topics2021_labeled.json
+    ClinicalTrials.2021-04-27.pt1: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt1.labeled.json
+    ClinicalTrials.2021-04-27.pt2: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt2.labeled.json
+    ClinicalTrials.2021-04-27.pt3: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt3.labeled.json
+    ClinicalTrials.2021-04-27.pt4: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt4.labeled.json
+    ClinicalTrials.2021-04-27.pt5: ../data/clinical_trials/labeled/ClinicalTrials.2021-04-27.pt5.labeled.json
 
 sentence_encoder:
-  type: 'specter'
-  model: sentence-transformers/allenai-specter
-  tokenizer: sentence-transformers/allenai-specter
+  type: 'paraphrase'
+  model: sentence-transformers/paraphrase-mpnet-base-v2
+  tokenizer: sentence-transformers/paraphrase-mpnet-base-v2
 
 embeddings:
   output_path: ../models/sentence_embeddings/sentence_transformer/
-  filename: clinical_documents_specter_64.npz
+  filename: topics_paraphrase-mpnet-base-v2_64.npz
 
 clustering: 
   embedding_paths:
@@ -49,3 +53,10 @@ clustering:
       max_iter: 10
       random_state: 42
       covariance_type: diag
+
+rank: 
+  document_embeddings: ../models/sentence_embeddings/sentence_transformer/clinical_documents_LaBSE.npz 
+  topic_embeddings: ../models/sentence_embeddings/sentence_transformer/topics_LaBSE_64.npz
+  k: 1000
+  output_path: ../data/results/results_LaBSE.txt
+  run_name: LaBSE_embeddings
